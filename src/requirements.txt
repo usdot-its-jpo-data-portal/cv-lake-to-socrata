@@ -1,0 +1,4 @@
+pandas==1.2.4
+requests==2.25.1
+socrata-py==1.0.8
+git+https://github.com/usdot-its-jpo-data-portal/sandbox_exporter@master#egg=sandbox_exporter
