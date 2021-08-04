@@ -65,6 +65,23 @@ Run the Docker container and pass in the environment variables:
 docker run cv-lake-to-socrata --env AUTH={"domain": "datahub.transportation.gov", "username": "someUsername", "password": "somePassword"} --env EVENT={"overwrite": true, "num_hours_backtrack": 72, "s3_source_bucket": "usdot-its-cvpilot-public-data", "s3_source_prefix": "wydot/BSM", "socrata_dataset_id": "xxxx-xxxx", "float_fields": [], "data_sample_length": "day", "permission": "private"}
 ```
 
+## Testing
+
+Tests are kept in the `/tests/` folder of this repository, with each file prepended with `test_`. To have the tests run through GitHub Workflow, create a Pull Request with your feature branch. 
+
+To run the tests locally, while in the `cv-lake-to-socrata` folder, run the following in your command line tool to set up your environment locally:
+```
+virtualenv -p python3 temp_env/
+. temp_env/bin/activate
+pip install "pytest<5"
+pip install coverage
+pip install -r src/requirements.txt
+```
+
+Once the environment has been setup, you can:
+- Run the Python tests with this command: `coverage run -m pytest`
+- Run coverage reports with this command: `coverage report -m`
+
 ## Deployment
 Deploy built Docker image to AWS Elastic Container Registry (ECR). Steps 2-5 are also available via AWS Console when you select your ECR repository and click on "View push commands". Replace all reference of `$AWS_ACCOUNT_NUMBER` with your own AWS account number.
 
