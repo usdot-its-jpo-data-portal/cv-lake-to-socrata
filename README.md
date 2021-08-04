@@ -1,4 +1,7 @@
 # cv-lake-to-socrata
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=usdot-its-jpo-data-portal_cv-lake-to-socrata&metric=alert_status)](https://sonarcloud.io/dashboard?id=usdot-its-jpo-data-portal_cv-lake-to-socrata)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=usdot-its-jpo-data-portal_cv-lake-to-socrata&metric=coverage)](https://sonarcloud.io/dashboard?id=usdot-its-jpo-data-portal_cv-lake-to-socrata)
+
 This repository contains code to ingest samples of data from the ITS Connected Vehicle Pilot Data Sandbox to their corresponding Socrata datasets on data.transportation.gov.
 
 # Prerequisites
