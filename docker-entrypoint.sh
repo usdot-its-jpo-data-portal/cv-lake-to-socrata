@@ -9,4 +9,4 @@ fi
 cd /opt/src
 echo 'Running ingest'
 
-exec python ./run.py && exit
+exec python -u ./run.py && exit
