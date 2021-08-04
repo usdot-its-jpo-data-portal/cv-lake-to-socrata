@@ -30,9 +30,8 @@ jobs:
               pip install -r src/requirements.txt
           - name: Run test and coverage
             env:
-              TARGET_BUCKET: ""
-              SOURCE_KEY_PREFIX: ""
-              VALIDATION_QUEUE_NAME: ""
+              AUTH: ""
+              EVENT: ""
             run: |
               coverage run -m pytest
               coverage report -m
