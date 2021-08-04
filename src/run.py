@@ -19,6 +19,7 @@ from socrata import Socrata, Revisions
 
 from sandbox_exporter.flattener import load_flattener
 from sandbox_exporter.s3 import S3Helper
+from sandbox_exporter.socrata_util import SocrataDataset
 
 
 logger = logging.getLogger()
@@ -54,6 +55,11 @@ def run(event, auth):
         auth['username'],
         auth['password']
     )
+    socrata_helper = SocrataDataset(
+        dataset_id=event['socrata_dataset_id'],
+        socrata_params=auth,
+        float_fields=event['float_fields']
+    )
 
     formatted_source_prefix = get_formatted_source_prefix(**event)
     s3_source_kwargs = {"Bucket": event['s3_source_bucket'], "Prefix": formatted_source_prefix}
@@ -65,7 +71,7 @@ def run(event, auth):
     else:
         replacement = revision.create_update_revision(permission=event['permission'])
     source = replacement.create_upload(f"{formatted_source_prefix.replace('/', '_')}.csv")
-    result = source._chunked_bytes(bytes_generator(s3_source_kwargs), "text/csv")
+    result = source._chunked_bytes(bytes_generator(s3_source_kwargs, socrata_helper), "text/csv")
     input_schema = result.get_latest_input_schema()
     output_schema = input_schema.get_latest_output_schema()
     job = replacement.apply(output_schema=output_schema)
@@ -84,7 +90,7 @@ def get_formatted_source_prefix(data_sample_length, s3_source_prefix, num_hours_
     else:
         return f"{s3_source_prefix}/{y}/{m}/{d}"
 
-def bytes_generator(s3_source_kwargs, limit=None):
+def bytes_generator(s3_source_kwargs, socrata_helper, limit=None):
     bucket_key_tuples, next_s3_source_kwargs = s3_helper.get_fp_chunks_from_prefix(s3_source_kwargs)
     if len(bucket_key_tuples) > 0:
         flattener_mod = load_flattener(bucket_key_tuples[0][1])
@@ -106,6 +112,7 @@ def bytes_generator(s3_source_kwargs, limit=None):
                     logger.error(f"Error while transforming record: {r}")
                     logger.error(traceback.format_exc())
                     raise
+            flat_recs = [socrata_helper.mod_dtype(r) for r in flat_recs]
             df = pd.DataFrame(flat_recs)
             df = prep_df(df, flattener.col_order)
             s = io.StringIO()
