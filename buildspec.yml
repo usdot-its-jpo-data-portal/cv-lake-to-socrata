@@ -4,12 +4,13 @@ phases:
   install:
     runtime-versions:
       docker: 18
-  pre_build:
     commands:
       - curl -fsSL https://raw.githubusercontent.com/usdot-its-jpo-data-portal/aws-codebuild-extras/master/install >> extras.sh
       - . ./extras.sh 
-      - echo $CODEBUILD_GIT_BRANCH
+  pre_build:
+    commands:
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - echo $CODEBUILD_GIT_BRANCH
       - CODEBUILD_RESOLVED_SOURCE_VERSION="${CODEBUILD_RESOLVED_SOURCE_VERSION:-$IMAGE_TAG}"
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
